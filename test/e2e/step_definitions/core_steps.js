@@ -18,11 +18,16 @@ Given('a proxy on port {int} that prepends {string} to the base path', async fun
 })
 
 When('I stop a server programmatically', function (callback) {
-  setTimeout(() => {
-    stopper.stop(this.config, (exitCode) => {
-      this.stopperExitCode = exitCode
-      callback()
-    })
+  setTimeout(async () => {
+    try {
+      const parsedConfig = await config.parseConfig(this.configFile, {}, { throwErrors: true, promiseConfig: true })
+      stopper.stop(parsedConfig, (exitCode) => {
+        this.stopperExitCode = exitCode
+        callback()
+      })
+    } catch (err) {
+      callback(err)
+    }
   }, 1000)
 })
 
