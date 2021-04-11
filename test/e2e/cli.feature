@@ -137,6 +137,9 @@ Feature: CLI
         --no-fail-on-failing-test-suite  Do not fail on failing test suite.
         --format-error                   A path to a file that exports the format
                                          function.                            [string]
+        --require                        Module to require before loading
+                                         configuration file. Use to register a
+                                         transpiler for a configuration file. [string]
       """
 
   Scenario: Run command help
@@ -173,6 +176,9 @@ Feature: CLI
         --added-files                  Comma-separated paths to added files. Useful
                                        when automatic file watching is disabled.
                                                                               [string]
+        --require                      Module to require before loading configuration
+                                       file. Use to register a transpiler for a
+                                       configuration file.                    [string]
       """
 
   Scenario: Stop command help
@@ -193,6 +199,8 @@ Feature: CLI
         --help       Print usage and options.                                [boolean]
         --port       <integer> Port where the server is listening.
         --log-level  <disable | error | warn | info | debug> Level of logging.
+        --require    Module to require before loading configuration file. Use to
+                     register a transpiler for a configuration file.          [string]
       """
 
   Scenario: Completion command help

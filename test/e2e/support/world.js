@@ -28,7 +28,7 @@ class World {
      * Path to the final Karma config file.
      * @type {string}
      */
-    this.configFile = path.join(this.sandboxDir, 'karma.conf.js')
+    this.configFile = undefined
 
     /**
      * Absolute path to the Karma executable.
@@ -36,7 +36,21 @@ class World {
      */
     this.karmaExecutable = fs.realpathSync(path.join(__dirname, '../../../bin/karma'))
 
-    this.config = {
+    this.lastRun = {
+      error: null,
+      stdout: '',
+      stderr: ''
+    }
+
+    this.backgroundProcess = {
+      handle: null,
+      stdout: '',
+      stderr: ''
+    }
+  }
+
+  buildConfig (configOverrides) {
+    const config = {
       singleRun: true,
       reporters: ['dots'],
       frameworks: ['jasmine'],
@@ -53,39 +67,28 @@ class World {
       _resolve: (name) => path.resolve(this.workDir, name)
     }
 
-    this.lastRun = {
-      error: null,
-      stdout: '',
-      stderr: ''
+    if (configOverrides != null) {
+      vm.runInNewContext(configOverrides, config)
     }
 
-    this.backgroundProcess = {
-      handle: null,
-      stdout: '',
-      stderr: ''
-    }
-  }
+    delete config._resolve
 
-  updateConfig (configOverrides) {
-    vm.runInNewContext(configOverrides, this.config)
-  }
-
-  writeConfigFile () {
-    delete this.config._resolve
-
-    const config = JSON.stringify(Object.assign({}, this.config, {
+    const content = JSON.stringify(Object.assign({}, config, {
       customLaunchers: Object.assign({
         ChromeHeadlessNoSandbox: { base: 'ChromeHeadless', flags: ['--no-sandbox'] }
-      }, this.config.customLaunchers)
+      }, config.customLaunchers)
     }))
 
-    const content = `process.env.CHROME_BIN = require('puppeteer').executablePath();
+    return `process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = (config) => {
-  config.set(${config});
+  config.set(${content});
 };
 `
+  }
 
+  writeConfigFile (fileName, content) {
+    this.configFile = path.join(this.sandboxDir, fileName)
     fs.writeFileSync(this.configFile, content)
   }
 

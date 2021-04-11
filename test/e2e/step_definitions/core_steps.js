@@ -2,15 +2,21 @@ const { defineParameterType, Given, Then, When } = require('cucumber')
 const fs = require('fs')
 const path = require('path')
 const { waitForCondition } = require('./utils')
+const config = require('../../../lib/config')
 const stopper = require('../../../lib/stopper')
 
 Given('a default configuration', function () {
-  this.writeConfigFile()
+  const content = this.buildConfig()
+  this.writeConfigFile('karma.conf.js', content)
 })
 
-Given('a configuration with:', function (fileContent) {
-  this.updateConfig(fileContent)
-  this.writeConfigFile()
+Given('a configuration with:', function (overrides) {
+  const content = this.buildConfig(overrides)
+  this.writeConfigFile('karma.conf.js', content)
+})
+
+Given('a configuration file named {string} containing:', function (fileName, content) {
+  this.writeConfigFile(fileName, content)
 })
 
 Given('a proxy on port {int} that prepends {string} to the base path', async function (proxyPort, proxyPath) {
