@@ -7,7 +7,7 @@ Feature: Launcher error
     Given a configuration with:
       """
       files = ['launcher-error/specs.js'];
-      browsers = [_resolve('launcher-error/fake-browser.sh')];
+      browsers = ['launcher-error/fake-browser.sh'];
       plugins = [
         'karma-jasmine',
         'karma-script-launcher'
