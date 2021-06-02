@@ -626,7 +626,7 @@ describe('FileList', () => {
       // MATCH: /some/a.js, /some/b.js, /a.txt
       list = new List(patterns('/some/*.js', '/a.*'), [], emitter, preprocess)
 
-      var modified = sinon.stub()
+      const modified = sinon.stub()
       emitter.on('file_list_modified', modified)
 
       return list.refresh().then((files) => {
