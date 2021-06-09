@@ -16,6 +16,11 @@ jobs:
 
     - node_js: "14"
       script:
+        - npm run test:unit
+        - npm run test:e2e
+
+    - node_js: "16"
+      script:
         - if [[ "$TRAVIS_BRANCH" != "master" ]]; then
             commitlint-travis;
           fi;
